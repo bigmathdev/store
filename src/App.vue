@@ -2,7 +2,7 @@
   <main>
     <section class="items">
       <h4>Selecione os produtos</h4>
-      <div v-for="product in products" @click="product.active = !product.active" class="product"
+      <div v-for="product in products" @click="quantityPerPage(product)" class="product"
         :class="{ selected: product.active }">
         <div class="photo">
           <img :src="product.image" />
@@ -45,7 +45,6 @@
               }}
             </td>
           </tr>
-
           <tr>
             <th>Total</th>
             <th>{{ totalAmount }}</th>
@@ -67,16 +66,6 @@ const storeAPI = async () => {
   products.value = response.data;
   return response;
 };
-
-const quantityPerProduct = computed(() => {
-  products.value.forEach((m) => {
-    if (!m.active) {
-      m.quantity = 0;
-    } else {
-      m.quantity = 1;
-    }
-  });
-});
 
 const cart = computed(() => {
   return products.value
@@ -101,6 +90,15 @@ const totalAmount = computed(() => {
     currency: "BRL",
   }).format(total);
 });
+
+const quantityPerPage = (product) => {
+  product.active = !product.active;
+  if(product.active) {
+    product.quantity = 1
+  } else {
+    product.quantity = 0
+  }
+}
 
 onMounted(() => {
   storeAPI();
